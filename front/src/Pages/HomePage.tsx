@@ -8,7 +8,7 @@ const HomePage: React.FC = () => {
   const [houses, setHouses] = useState<House[]>([]);
   const [filteredHouses, setFilteredHouses] = useState<House[]>([]);
   const [filterCriteria, setFilterCriteria] = useState<FilterCriteria>({
-    location: '',  // Changed from 'address' to 'location'
+    location: '',
     minPrice: 0,
     maxPrice: 10000
   });
@@ -36,11 +36,15 @@ const HomePage: React.FC = () => {
 
   const applyFilters = () => {
     const filtered = houses.filter(house => {
-      const locationMatch = (house.address?.toLowerCase().includes(filterCriteria.location.toLowerCase()) ?? false) ||
-                           (house.city?.toLowerCase().includes(filterCriteria.location.toLowerCase()) ?? false);
-      const priceMatch = (typeof house.price === 'number') && 
-                         house.price >= filterCriteria.minPrice && 
-                         house.price <= filterCriteria.maxPrice;
+      const locationMatch = 
+        (house.city?.toLowerCase().includes(filterCriteria.location.toLowerCase()) ?? false) ||
+        (house.address?.toLowerCase().includes(filterCriteria.location.toLowerCase()) ?? false);
+      
+      const priceMatch = 
+        typeof house.price === 'number' &&
+        house.price >= filterCriteria.minPrice && 
+        house.price <= filterCriteria.maxPrice;
+      
       return locationMatch && priceMatch;
     });
     console.log('Filtered houses:', filtered);
@@ -53,6 +57,7 @@ const HomePage: React.FC = () => {
 
   const handleLocationSelect = (location: string, lat: number, lon: number) => {
     setSelectedLocation({ location, lat, lon });
+    setFilterCriteria(prev => ({ ...prev, location }));
   };
 
   return (
@@ -67,7 +72,7 @@ const HomePage: React.FC = () => {
       <div className="w-1/3 p-4 overflow-y-auto">
         <HouseListings houses={filteredHouses} />
       </div>
-      <div className="w-1/3 p-4 overflow-y-auto">
+      <div className="w-1/3 p-4">
         <MapComponent houses={filteredHouses} selectedLocation={selectedLocation} />
       </div>
     </div>
