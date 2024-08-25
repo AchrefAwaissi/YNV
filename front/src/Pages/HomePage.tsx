@@ -63,7 +63,7 @@ const HomePage: React.FC = () => {
   return (
     <div className="flex-1 flex h-screen">
       <div className="w-1/3 p-4 overflow-y-auto">
-        <PropertyFilter 
+       <PropertyFilter 
           onFilterChange={handleFilterChange} 
           onLocationSelect={handleLocationSelect}
           filterCriteria={filterCriteria} 
@@ -72,7 +72,7 @@ const HomePage: React.FC = () => {
       <div className="w-1/3 p-4 overflow-y-auto">
         <HouseListings houses={filteredHouses} />
       </div>
-      <div className="w-1/3 p-4">
+      <div className="w-1/3 p-4"> 
         <MapComponent houses={filteredHouses} selectedLocation={selectedLocation} />
       </div>
     </div>
