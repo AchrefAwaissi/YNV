@@ -12,13 +12,17 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ItemService } from './item.service';
+import { GeocodingService } from './geocoding.service';
 import { Item } from './item.iterface';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 
 @Controller('item')
 export class ItemController {
-  constructor(private readonly itemService: ItemService) {}
+  constructor(
+    private readonly itemService: ItemService,
+    private readonly geocodingService: GeocodingService,
+  ) {}
 
   @Post()
   @UseInterceptors(
@@ -42,6 +46,18 @@ export class ItemController {
       item.image = file.filename;
     }
     console.log('Received item:', item);
+
+    // Géocodage de l'adresse
+    const coordinates = await this.geocodingService.getCoordinates(
+      item.address,
+      item.city,
+      'France',
+    );
+    if (coordinates) {
+      item.latitude = coordinates.lat;
+      item.longitude = coordinates.lng;
+    }
+
     return this.itemService.create(item);
   }
 
@@ -81,6 +97,20 @@ export class ItemController {
     if (file) {
       item.image = file.filename; // Met à jour l'image si un fichier est fourni
     }
+
+    // Géocodage de l'adresse si elle a été modifiée
+    if (item.address || item.city) {
+      const coordinates = await this.geocodingService.getCoordinates(
+        item.address,
+        item.city,
+        'France',
+      );
+      if (coordinates) {
+        item.latitude = coordinates.lat;
+        item.longitude = coordinates.lng;
+      }
+    }
+
     const updatedItem = await this.itemService.update(id, item);
     if (!updatedItem) {
       throw new NotFoundException(`Item with ID ${id} not found`);
