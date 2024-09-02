@@ -7,7 +7,7 @@ interface CityInfoProps {
   area: number;
   monumentImage: string;
 }
-
+//ajout de comment pour le merge
 const CityInfoCard: React.FC<CityInfoProps> = ({ name, costPerSquareMeter, population, area, monumentImage }) => {
 
 
