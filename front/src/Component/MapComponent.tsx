@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, Circle, InfoWindow, Rectangle } from '@react-google-maps/api';
 import axios from 'axios';
@@ -484,7 +480,15 @@ const MapComponent: React.FC<MapProps> = ({
             )}
           </Marker>
         ))}
-
+        {cityInfo && (
+  <CityInfoCard
+    name={cityInfo.name}
+    costPerSquareMeter={cityInfo.costPerSquareMeter}
+    population={cityInfo.population}
+    area={cityInfo.area}
+    monumentImage={cityInfo.monumentImage}
+  />
+)}
       </GoogleMap>
 
       <div className="absolute top-2 right-2 bg-white p-4 rounded shadow-md z-[1000]">
