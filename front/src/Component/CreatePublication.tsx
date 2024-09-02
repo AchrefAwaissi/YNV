@@ -15,6 +15,7 @@ const CreatePublication: React.FC = () => {
     title: '',
     address: '',
     city: '',
+    country: '', 
     typeOfHousing: '',
     rooms: '',
     bedrooms: '',
@@ -50,10 +51,15 @@ const CreatePublication: React.FC = () => {
   };
 
   const handleSuggestionClick = (suggestion: Suggestion) => {
+    const addressParts = suggestion.display_name.split(',');
+    const city = addressParts.slice(-2, -1)[0].trim();
+    const country = addressParts.slice(-1)[0].trim();
+
     setFormData(prev => ({
       ...prev,
       address: suggestion.display_name,
-      city: suggestion.display_name.split(',').slice(-2, -1)[0].trim()
+      city,
+      country // Mettre à jour automatiquement le champ country
     }));
     setSuggestions([]);
     setShowSuggestions(false);
@@ -193,6 +199,19 @@ const CreatePublication: React.FC = () => {
                 onChange={handleChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 placeholder="Ville"
+              />
+            </div>
+            <div>
+              <label htmlFor="country" className="block text-sm font-medium text-gray-700">Pays</label>
+              <input
+                id="country"
+                name="country"
+                type="text"
+                required
+                value={formData.country}
+                onChange={handleChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                placeholder="Pays"
               />
             </div>
             <div>
