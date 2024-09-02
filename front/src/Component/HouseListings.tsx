@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Maximize2, BedDouble, Square } from 'lucide-react';
@@ -5,13 +6,15 @@ import { House } from '../types';
 
 interface HouseListingsProps {
   houses: House[];
+  onHouseSelect: (house: House) => void;  // Ajout de la prop onHouseSelect
 }
 
-const HouseListings: React.FC<HouseListingsProps> = ({ houses }) => {
+const HouseListings: React.FC<HouseListingsProps> = ({ houses, onHouseSelect }) => {
   const navigate = useNavigate();
 
-  const handleCardClick = (id: string) => {
-    navigate(`/property/${id}`);
+  const handleCardClick = (house: House) => {
+    onHouseSelect(house);  // Appel de la fonction onHouseSelect lors du clic sur une maison
+    navigate(`/property/${house._id}`);
   };
 
   const HouseCard: React.FC<House> = ({
@@ -28,7 +31,11 @@ const HouseListings: React.FC<HouseListingsProps> = ({ houses }) => {
   }) => (
     <div 
       className="bg-white rounded-lg overflow-hidden shadow-md w-full mb-4 cursor-pointer" 
-      onClick={() => handleCardClick(_id)}
+      onClick={() => handleCardClick({
+        _id, image, price, address, city, typeOfHousing, title, rooms, bedrooms, area,
+        name: '',
+        description: ''
+      })}
     >
       <div className="flex flex-col md:flex-row">
         <div className="relative md:w-2/5 lg:w-1/2 h-64 md:h-auto">
@@ -41,7 +48,7 @@ const HouseListings: React.FC<HouseListingsProps> = ({ houses }) => {
             className="absolute top-2 right-2 bg-white rounded-full p-1"
             onClick={(e) => {
               e.stopPropagation();
-              // Add logic for favoriting/liking a property here
+              // Logique pour ajouter aux favoris / liker une propriété ici
             }}
           >
             <Heart className="h-6 w-6 text-gray-500" />

@@ -11,7 +11,9 @@ const HomePage: React.FC = () => {
   const [filterCriteria, setFilterCriteria] = useState<FilterCriteria>({
     location: '',
     minPrice: 0,
-    maxPrice: 10000
+    maxPrice: 10000,
+    minSize: 0,
+    maxSize: Infinity
   });
   const [selectedLocation, setSelectedLocation] = useState<Location | undefined>();
   const [loading, setLoading] = useState(false);
@@ -66,14 +68,17 @@ const HomePage: React.FC = () => {
   }, []);
 
   const handleMapLocationSelect = useCallback(({ lat, lon }: { lat: number; lon: number }) => {
-    setSelectedLocation(prev => {
-      const newLocation: Location = {
-        location: prev?.location || 'Selected Location', // Utilisez une valeur par défaut si prev.location n'existe pas
-        lat,
-        lon
-      };
-      return newLocation;
-    });
+    setSelectedLocation(prev => prev ? { ...prev, lat, lon } : { location: '', lat, lon });
+  }, []);
+
+  const handleHouseSelect = useCallback((house: House) => {
+    if (house.latitude && house.longitude) {
+      setSelectedLocation({
+        location: house.address || '',
+        lat: house.latitude,
+        lon: house.longitude
+      });
+    }
   }, []);
 
   return (
@@ -84,18 +89,25 @@ const HomePage: React.FC = () => {
 
       <main className="flex-grow flex overflow-hidden">
         <div className="w-1/4 p-4 overflow-y-auto border-r">
-          <PropertyFilter
-            onFilterChange={handleFilterChange}
-            onLocationSelect={handleLocationSelect}
-            filterCriteria={filterCriteria}
-          />
+          <div className="sticky top-0 bg-white z-10 pb-4">
+            <PropertyFilter
+              onFilterChange={handleFilterChange}
+              onLocationSelect={handleLocationSelect}
+              filterCriteria={filterCriteria}
+            />
+          </div>
         </div>
 
         <div className="w-3/4 flex overflow-hidden">
           <div className="w-1/2 p-4 overflow-y-auto border-r">
             {loading && <p>Loading houses...</p>}
             {error && <p className="text-red-500">{error}</p>}
-            {!loading && !error && <HouseListings houses={filteredHouses} />}
+            {!loading && !error && (
+              <HouseListings
+                houses={filteredHouses}
+                onHouseSelect={handleHouseSelect}
+              />
+            )}
           </div>
           <div className="w-1/2 p-4">
             <MapComponent

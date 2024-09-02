@@ -1,5 +1,17 @@
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { ChangeEvent, useState, useEffect } from 'react';
-import { MapPin } from 'lucide-react';
+import { MapPin, ChevronDown } from 'lucide-react';
 import axios from 'axios';
 import { FilterCriteria, Location } from '../types';
 
@@ -69,26 +81,29 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange, onLocat
   }, []);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md max-w-md">
-      <h2 className="text-2xl font-bold mb-4">Filter</h2>
-      
+    <div className="bg-white p-6 rounded-lg shadow-md w-[320px]">
+      <h2 className="text-xl font-bold mb-6">Filter</h2>
+
       <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Location</h3>
+        <h3 className="text-base font-medium mb-2">Location</h3>
         <div className="relative">
           <input
             type="text"
             value={filterCriteria.location}
             onChange={handleLocationChange}
-            className="w-full p-2 border rounded-md appearance-none bg-white"
-            placeholder="Enter city, neighborhood, or postal code"
+            className="w-full p-3 border border-[#EAEAEA] rounded-lg appearance-none bg-white"
+            placeholder="Scotland"
           />
-          <MapPin className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center">
+            <MapPin className="text-black mr-2" size={20} />
+            <ChevronDown className="text-black" size={20} />
+          </div>
           {showSuggestions && suggestions.length > 0 && (
-            <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-auto">
+            <ul className="absolute z-10 w-full bg-white border border-[#EAEAEA] rounded-lg mt-1 max-h-60 overflow-auto">
               {suggestions.map((suggestion, index) => (
-                <li 
-                  key={index} 
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                <li
+                  key={index}
+                  className="p-3 hover:bg-gray-100 cursor-pointer"
                   onClick={() => handleSuggestionClick(suggestion)}
                 >
                   {suggestion.label}
@@ -100,36 +115,47 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange, onLocat
       </div>
 
       <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Price Range</h3>
-        <div className="flex justify-between mb-2">
-          <input
-            type="number"
-            value={filterCriteria.minPrice}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => handlePriceChange(parseInt(e.target.value), true)}
-            className="w-1/3 p-2 border rounded-md"
-            placeholder="Min"
-          />
-          <input
-            type="number"
-            value={filterCriteria.maxPrice}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => handlePriceChange(parseInt(e.target.value), false)}
-            className="w-1/3 p-2 border rounded-md"
-            placeholder="Max"
-          />
-        </div>
+        <h3 className="text-base font-medium mb-2">Type of Place</h3>
+        {/* Add checkboxes for different types of places here */}
+      </div>
+
+      <div className="mb-6">
+        <h3 className="text-base font-medium mb-2">Price Range</h3>
         <input
           type="range"
           min="0"
           max="10000"
           value={filterCriteria.maxPrice}
           onChange={(e: ChangeEvent<HTMLInputElement>) => handlePriceChange(parseInt(e.target.value), false)}
-          className="w-full"
+          className="w-full mb-2"
         />
-        <div className="flex justify-between">
+        <div className="flex justify-between text-sm">
           <span>${filterCriteria.minPrice}</span>
           <span>${filterCriteria.maxPrice}</span>
         </div>
       </div>
+
+      <div className="mb-6">
+        <h3 className="text-base font-medium mb-2">Size</h3>
+        <div className="flex justify-between">
+          <input
+            type="number"
+            value={filterCriteria.minSize}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => onFilterChange({ minSize: parseInt(e.target.value) })}
+            className="w-[140px] p-3 border border-[#EAEAEA] rounded-lg"
+            placeholder="Min"
+          />
+          <input
+            type="number"
+            value={filterCriteria.maxSize}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => onFilterChange({ maxSize: parseInt(e.target.value) })}
+            className="w-[140px] p-3 border border-[#EAEAEA] rounded-lg"
+            placeholder="Max"
+          />
+        </div>
+      </div>
+
+      {/* Add more filter options here (Features, Style) */}
     </div>
   );
 };
